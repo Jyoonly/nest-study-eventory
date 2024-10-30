@@ -1,7 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RegionService } from './region.service';
-import { Region } from '@prisma/client';
 import { RegionListDto } from './dto/region.dto';
 
 @Controller('regions')
