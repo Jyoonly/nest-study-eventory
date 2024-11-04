@@ -28,7 +28,7 @@ export class ReviewRepository {
       },
     });
   }
-
+/*
   async getUserById(userId: number): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {
@@ -103,4 +103,5 @@ export class ReviewRepository {
       },
     });
   }
+    */
 }
