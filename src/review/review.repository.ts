@@ -28,7 +28,8 @@ export class ReviewRepository {
       },
     });
   }
-/*
+  
+  // 예외처리..?
   async getUserById(userId: number): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {
@@ -103,5 +104,5 @@ export class ReviewRepository {
       },
     });
   }
-    */
+  
 }
