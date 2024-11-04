@@ -66,22 +66,5 @@ export class ReviewService {
 
     return ReviewDto.from(review);
   }
-/*
-  async getReviewById(reviewId: number): Promise<ReviewDto> {
-    const review = await this.reviewRepository.getReviewById(reviewId);
-
-    if (!review) {
-      throw new NotFoundException('Review가 존재하지 않습니다.');
-    }
-
-    return ReviewDto.from(review);
-  }
-
-  async getReviews(query: ReviewQuery): Promise<ReviewListDto> {
-    const reviews = await this.reviewRepository.getReviews(query);
-
-    return ReviewListDto.from(reviews);
-  }
-    */
 }
   

@@ -29,21 +29,5 @@ export class ReviewController {
   async createReview(@Body() payload: CreateReviewPayload): Promise<ReviewDto> {
     return this.reviewService.createReview(payload);
   }
-/*
-  @Get(':reviewId')
-  @ApiOperation({ summary: '리뷰 상세 정보를 가져옵니다' })
-  @ApiOkResponse({ type: ReviewDto })
-  async getReviewById(
-    @Param('reviewId', ParseIntPipe) reviewId: number,
-  ): Promise<ReviewDto> {
-    return this.reviewService.getReviewById(reviewId);
-  }
 
-  @Get()
-  @ApiOperation({ summary: '여러 리뷰 정보를 가져옵니다' })
-  @ApiOkResponse({ type: ReviewListDto })
-  async getReviews(@Query() query: ReviewQuery): Promise<ReviewListDto> {
-    return this.reviewService.getReviews(query);
-  }
-    */
 }
