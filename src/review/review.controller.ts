@@ -29,7 +29,7 @@ export class ReviewController {
   async createReview(@Body() payload: CreateReviewPayload): Promise<ReviewDto> {
     return this.reviewService.createReview(payload);
   }
-  /*
+/*
   @Get(':reviewId')
   @ApiOperation({ summary: '리뷰 상세 정보를 가져옵니다' })
   @ApiOkResponse({ type: ReviewDto })
