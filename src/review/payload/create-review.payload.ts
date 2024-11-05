@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateReviewPayload {
+    // 400 Bad Request
   @IsInt()
   @ApiProperty({
     description: '모임 ID',
