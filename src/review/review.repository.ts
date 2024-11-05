@@ -8,7 +8,7 @@ import { ReviewQuery } from './query/review.query';
 @Injectable()
 export class ReviewRepository {
   constructor(private readonly prisma: PrismaService) {}
-
+  /*
   async createReview(data: CreateReviewData): Promise<ReviewData> {
     return this.prisma.review.create({
       data: {
@@ -28,7 +28,7 @@ export class ReviewRepository {
       },
     });
   }
-/*
+
   async getUserById(userId: number): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {
@@ -70,7 +70,7 @@ export class ReviewRepository {
 
     return !!event;
   }
-
+  */
   async getReviewById(reviewId: number): Promise<ReviewData | null> {
     return this.prisma.review.findUnique({
       where: {
@@ -103,5 +103,5 @@ export class ReviewRepository {
       },
     });
   }
-    */
+    
 }

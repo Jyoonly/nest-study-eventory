@@ -12,9 +12,9 @@ import { ReviewQuery } from './query/review.query';
 @Injectable()
 export class ReviewService {
   constructor(private readonly reviewRepository: ReviewRepository) {}
-
+  /*
   async createReview(payload: CreateReviewPayload): Promise<ReviewDto> {
-    /* 
+    /
     //예외처리
     const isReviewExist = await this.reviewRepository.isReviewExist(
       payload.userId,
@@ -53,7 +53,7 @@ export class ReviewService {
     if (!user) {
       throw new NotFoundException('User가 존재하지 않습니다.');
     }
-      */
+      
     const createData: CreateReviewData = {
       userId: payload.userId,
       eventId: payload.eventId,
@@ -66,7 +66,8 @@ export class ReviewService {
 
     return ReviewDto.from(review);
   }
-/*
+    */
+
   async getReviewById(reviewId: number): Promise<ReviewDto> {
     const review = await this.reviewRepository.getReviewById(reviewId);
 
@@ -82,6 +83,6 @@ export class ReviewService {
 
     return ReviewListDto.from(reviews);
   }
-    */
+    
 }
   
