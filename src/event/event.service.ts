@@ -59,4 +59,15 @@ export class EventService {
 
         return EventDto.from(event);
     }
+
+    // 이벤트 1개 조회
+    async getEventById(eventId: number): Promise<EventDto> {
+        const event = await this.eventRepository.getEventById(eventId);
+
+        if (!event) {
+            throw new NotFoundException('이벤트가 존재하지 않습니다.');
+        }
+
+        return EventDto.from(event);
+    }
 }

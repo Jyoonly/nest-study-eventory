@@ -9,8 +9,7 @@ export class EventRepository {
     constructor(private readonly prisma: PrismaService) { }
 
     async createEvent(data: CreateEventData): Promise<EventData> {
-
-        const event = await this.prisma.event.create({
+        return this.prisma.event.create({
             data: {
                 hostId: data.hostId,
                 title: data.title,
@@ -33,8 +32,6 @@ export class EventRepository {
                 maxPeople: true,
             },
         });
-
-        return event;
     }
 
     // 호스트가 모임 참여
@@ -68,6 +65,27 @@ export class EventRepository {
         return this.prisma.city.findUnique({
             where: {
                 id: cityId,
+            },
+        });
+    }
+
+
+    // 이벤트 1개 조회
+    async getEventById(eventId: number): Promise<EventData | null> {
+        return this.prisma.event.findUnique({
+            where: {
+                id: eventId,
+            },
+            select: {
+                id: true,
+                hostId: true,
+                title: true,
+                description: true,
+                categoryId: true,
+                cityId: true,
+                startTime: true,
+                endTime: true,
+                maxPeople: true,
             },
         });
     }
