@@ -78,4 +78,15 @@ export class EventService {
 
         return EventListDto.from(events);
     }
+
+    // 유저가 모임에 참가
+    async joinEvent(eventId: number, userId: number): Promise<void> {
+        const event = await this.eventRepository.getEventById(eventId);
+
+        if (!event) {
+            throw new NotFoundException('이벤트가 존재하지 않습니다.');
+        }
+
+        await this.eventRepository.joinEvent(eventId, userId);
+    }
 }

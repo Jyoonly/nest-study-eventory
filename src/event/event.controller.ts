@@ -33,4 +33,13 @@ export class EventController {
         return this.eventService.getEvents(query);
     }
 
+    // 유저가 모임에 참여
+    @Post(':eventId/join')
+    async joinEvent(
+        @Param('eventId', ParseIntPipe) eventId: number,
+        @Body('userId', ParseIntPipe) userId: number,
+    ): Promise<void> {
+        return this.eventService.joinEvent(eventId, userId);
+    }
+
 }
