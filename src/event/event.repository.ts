@@ -2,13 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../common/services/prisma.service";
 import { CreateEventData } from "./type/create-event-data.type";
 import { EventData } from "./type/event-data.type";
+import { User, Category, City } from '@prisma/client';
 
 @Injectable()
 export class EventRepository {
     constructor(private readonly prisma: PrismaService) { }
 
     async createEvent(data: CreateEventData): Promise<EventData> {
-        return this.prisma.event.create({
+
+        const event = await this.prisma.event.create({
             data: {
                 hostId: data.hostId,
                 title: data.title,
@@ -29,6 +31,43 @@ export class EventRepository {
                 startTime: true,
                 endTime: true,
                 maxPeople: true,
+            },
+        });
+
+        return event;
+    }
+
+    // 호스트가 모임 참여
+    async joinEvent(Id: number, hostId: number): Promise<void> {
+        await this.prisma.eventJoin.create({
+            data: {
+                eventId: Id,
+                userId: hostId,
+            },
+        });
+    }
+
+    // 예외처리
+    async getUserById(userId: number): Promise<User | null> {
+        return this.prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+        });
+    }
+
+    async getCategoryById(categoryId: number): Promise<Category | null> {
+        return this.prisma.category.findUnique({
+            where: {
+                id: categoryId,
+            },
+        });
+    }
+
+    async getCityById(cityId: number): Promise<City | null> {
+        return this.prisma.city.findUnique({
+            where: {
+                id: cityId,
             },
         });
     }

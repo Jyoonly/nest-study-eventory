@@ -12,7 +12,7 @@ export class EventController {
 
     @Post()
     @ApiOperation({ summary: '이벤트를 생성합니다' })
-    @ApiCreatedResponse({ type: ReviewDto })
+    @ApiCreatedResponse({ type: EventDto })
     async createEvent(@Body() payload: CreateEventPayload): Promise<EventDto> {
         return this.eventService.createEvent(payload);
     }
