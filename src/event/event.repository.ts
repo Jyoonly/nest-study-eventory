@@ -36,12 +36,12 @@ export class EventRepository {
         });
     }
 
-    // 호스트가 모임 참여
-    async joinEvent(Id: number, hostId: number): Promise<void> {
+    // 유저가 모임 참여
+    async joinEvent(eventId: number, userId: number): Promise<void> {
         await this.prisma.eventJoin.create({
             data: {
-                eventId: Id,
-                userId: hostId,
+                eventId: eventId,
+                userId: userId,
             },
         });
     }
