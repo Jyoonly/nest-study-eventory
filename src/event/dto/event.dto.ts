@@ -75,3 +75,16 @@ export class EventDto {
     }
 }
 
+export class EventListDto {
+    @ApiProperty({
+        description: '모임 목록',
+        type: [EventDto],
+    })
+    events!: EventDto[];
+
+    static from(events: EventData[]): EventListDto {
+        return {
+            events: EventDto.fromArray(events),
+        };
+    }
+}

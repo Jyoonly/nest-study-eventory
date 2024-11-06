@@ -1,8 +1,9 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { EventRepository } from './event.repository';
 import { CreateEventPayload } from './payload/create-event.payload';
-import { EventDto } from './dto/event.dto';
+import { EventDto, EventListDto } from './dto/event.dto';
 import { CreateEventData } from './type/create-event-data.type';
+import { EventQuery } from './query/event.query';
 
 @Injectable()
 export class EventService {
@@ -69,5 +70,12 @@ export class EventService {
         }
 
         return EventDto.from(event);
+    }
+
+    // 이벤트 여러개 조회
+    async getEvents(query: EventQuery): Promise<EventListDto> {
+        const events = await this.eventRepository.getEvents(query);
+
+        return EventListDto.from(events);
     }
 }
