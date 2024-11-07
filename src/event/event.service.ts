@@ -81,11 +81,50 @@ export class EventService {
 
     // 유저가 모임에 참가
     async joinEvent(eventId: number, userId: number): Promise<void> {
-        const event = await this.eventRepository.getEventById(eventId);
 
+        // 예외처리
+
+        // 404 not found
+        // 1. 유저가 존재하지 않는 경우
+        const user = await this.eventRepository.getUserById(userId);
+        if (!user) {
+            throw new NotFoundException('유저가 존재하지 않습니다.');
+        }
+
+        // 2. 이벤트가 존재하지 않는 경우
+        const event = await this.eventRepository.getEventById(eventId);
         if (!event) {
             throw new NotFoundException('이벤트가 존재하지 않습니다.');
         }
+
+        // 409 error
+        // 1. 이미 참가한 경우
+        const isJoined = await this.eventRepository.isUserJoinedEvent(eventId, userId);
+        if (isJoined) {
+            throw new ConflictException('이미 참가한 이벤트입니다.');
+        }
+
+        // 2. 참가 인원이 초과된 경우
+        const isOverMaxPeople = await this.eventRepository.isOverMaxPeople(eventId);
+        if (isOverMaxPeople) {
+            throw new ConflictException('참가 인원이 초과되었습니다.');
+        }
+
+        // 3. 이벤트가 시작된 경우
+        const StartTime = await this.eventRepository.getStartTime(eventId);
+        if (StartTime < new Date()) {
+            throw new ConflictException('이미 시작된 이벤트입니다.');
+        }
+
+        // 4. 이벤트가 종료된 경우
+        const endTime = await this.eventRepository.getEndTime(eventId);
+        if (endTime < new Date()) {
+            throw new ConflictException('이미 종료된 이벤트입니다.');
+        }
+        //? 3번만 있어도 될지도.. 불필요한 코드인가? 
+
+
+
 
         await this.eventRepository.joinEvent(eventId, userId);
     }

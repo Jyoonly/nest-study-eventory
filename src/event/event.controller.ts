@@ -4,6 +4,8 @@ import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestj
 import { CreateEventPayload } from './payload/create-event.payload';
 import { EventDto, EventListDto } from './dto/event.dto';
 import { EventQuery } from './query/event.query';
+import Joi from 'joi';
+import { JoinEventPayload } from './payload/join-event.payload';
 
 @Controller('event')
 @ApiTags('Event API')
@@ -35,11 +37,12 @@ export class EventController {
 
     // 유저가 모임에 참여
     @Post(':eventId/join')
+    @ApiOperation({ summary: '유저가 이벤트에 참여합니다' })
     async joinEvent(
         @Param('eventId', ParseIntPipe) eventId: number,
-        @Body('userId', ParseIntPipe) userId: number,
+        @Body() payload: JoinEventPayload
     ): Promise<void> {
-        return this.eventService.joinEvent(eventId, userId);
+        return this.eventService.joinEvent(eventId, payload.userId);
     }
 
 }

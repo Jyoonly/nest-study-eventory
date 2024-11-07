@@ -114,4 +114,69 @@ export class EventRepository {
             },
         });
     }
+
+    // 예외처리
+    // 이미 참여한 이벤트인지
+    async isUserJoinedEvent(eventId: number, userId: number): Promise<boolean> {
+        const eventJoin = await this.prisma.eventJoin.findUnique({
+            where: {
+                eventId_userId: {
+                    eventId: eventId,
+                    userId: userId,
+                },
+            },
+        });
+
+        return !!eventJoin;
+    }
+
+    // 최대 인원수 초과했는지
+    async isOverMaxPeople(eventId: number): Promise<boolean> {
+        const event = await this.prisma.event.findUnique({
+            where: {
+                id: eventId,
+            },
+            select: {
+                maxPeople: true,
+            },
+        });
+
+        const eventJoinCount = await this.prisma.eventJoin.count({
+            where: {
+                eventId: eventId,
+            },
+        });
+
+        return eventJoinCount >= event!.maxPeople;
+        // 이미 service에서 event 존재여부를 확인했기 때문에 event가 null일 수 없음
+        //? 비교를 repository에서 해도 괜찮은가? repository는 데베와 소통만 하는게 나은거아닌가? 
+    }
+
+    // 이벤트 시작시간
+    async getStartTime(eventId: number): Promise<Date> {
+        const event = await this.prisma.event.findUnique({
+            where: {
+                id: eventId,
+            },
+            select: {
+                startTime: true,
+            },
+        });
+
+        return event!.startTime;
+    }
+
+    // 이벤트 종료시간
+    async getEndTime(eventId: number): Promise<Date> {
+        const event = await this.prisma.event.findUnique({
+            where: {
+                id: eventId,
+            },
+            select: {
+                endTime: true,
+            },
+        });
+
+        return event!.endTime;
+    }
 }
