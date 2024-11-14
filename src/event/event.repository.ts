@@ -46,6 +46,18 @@ export class EventRepository {
         });
     }
 
+    // 유저가 모임 나가기
+    async outEvent(eventId: number, userId: number): Promise<void> {
+        await this.prisma.eventJoin.delete({
+            where: {
+                eventId_userId: {
+                    eventId: eventId,
+                    userId: userId,
+                },
+            },
+        });
+    }
+
     // 예외처리
     async getUserById(userId: number): Promise<User | null> {
         return this.prisma.user.findUnique({
@@ -149,7 +161,7 @@ export class EventRepository {
 
         return eventJoinCount >= event!.maxPeople;
         // 이미 service에서 event 존재여부를 확인했기 때문에 event가 null일 수 없음
-        //? 비교를 repository에서 해도 괜찮은가? repository는 데베와 소통만 하는게 나은거아닌가? 
+        // 비교작업 repository에서 해도 괜찮은가? repository는 데베와 소통만 하는게 나은거아닌가? 
     }
 
     // 이벤트 시작시간
@@ -179,4 +191,5 @@ export class EventRepository {
 
         return event!.endTime;
     }
+
 }

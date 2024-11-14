@@ -9,6 +9,7 @@ import { EventQuery } from './query/event.query';
 export class EventService {
     constructor(private readonly eventRepository: EventRepository) { }
 
+    // feat14: 이벤트 생성
     async createEvent(payload: CreateEventPayload): Promise<EventDto> {
 
         // 예외처리
@@ -61,7 +62,7 @@ export class EventService {
         return EventDto.from(event);
     }
 
-    // 이벤트 1개 조회
+    // feat16: 이벤트 한 개 조회
     async getEventById(eventId: number): Promise<EventDto> {
         const event = await this.eventRepository.getEventById(eventId);
 
@@ -72,14 +73,14 @@ export class EventService {
         return EventDto.from(event);
     }
 
-    // 이벤트 여러개 조회
+    // feat17: 이벤트 여러 개 조회
     async getEvents(query: EventQuery): Promise<EventListDto> {
         const events = await this.eventRepository.getEvents(query);
 
         return EventListDto.from(events);
     }
 
-    // 유저가 모임에 참가
+    // feat18: 유저가 모임에 참여
     async joinEvent(eventId: number, userId: number): Promise<void> {
 
         // 예외처리
@@ -121,11 +122,46 @@ export class EventService {
         if (endTime < new Date()) {
             throw new ConflictException('이미 종료된 이벤트입니다.');
         }
-        //? 3번만 있어도 될지도.. 불필요한 코드인가? 
-
-
-
+        // 3번만 있어도 될지도.. 불필요한 코드인가? 
 
         await this.eventRepository.joinEvent(eventId, userId);
+    }
+
+    // feat19: 유저가 모임에서 나가기
+    async outEvent(eventId: number, userId: number): Promise<void> {
+        // 예외처리
+        // 404 not found
+        // 1. 유저가 존재하지 않는 경우
+        const user = await this.eventRepository.getUserById(userId);
+        if (!user) {
+            throw new NotFoundException('유저가 존재하지 않습니다.');
+        }
+
+        // 2. 이벤트가 존재하지 않는 경우
+        const event = await this.eventRepository.getEventById(eventId);
+        if (!event) {
+            throw new NotFoundException('이벤트가 존재하지 않습니다.');
+        }
+
+        // 409 error
+        // 1. 호스트가 나가려는 경우
+        if (event.hostId === userId) {
+            throw new ConflictException('호스트는 이벤트에서 나갈 수 없습니다.');
+        }
+
+        // 2. 참가하지 않은 경우
+        const isJoined = await this.eventRepository.isUserJoinedEvent(eventId, userId);
+        if (!isJoined) {
+            throw new ConflictException('참가하지 않은 이벤트입니다.');
+        }
+
+        // 3. 이벤트가 시작된 경우
+        const StartTime = await this.eventRepository.getStartTime(eventId);
+        if (StartTime < new Date()) {
+            throw new ConflictException('이미 시작된 이벤트입니다.');
+        }
+
+        await this.eventRepository.outEvent(eventId, userId);
+
     }
 }

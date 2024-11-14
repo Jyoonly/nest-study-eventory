@@ -24,7 +24,6 @@ export class CreateEventPayload {
     })
     description!: string;
 
-    // 카테고리는 조건 더 필요하지 않나..? 흠 이건 나중에 생각해보자 => service에서 처리. 더불어 service에서 쓰는 함수?메서드?는 repository에 제작. 
     @IsInt()
     @ApiProperty({
         description: '카테고리 ID',
