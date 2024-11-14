@@ -9,7 +9,13 @@ import { CommonModule } from '../common/common.module';
 import { ReviewModule } from '../review/review.module';
 
 @Module({
-  imports: [configModule, CategoryModule, RegionModule, ReviewModule, CommonModule],
+  imports: [
+    configModule,
+    CategoryModule,
+    RegionModule,
+    ReviewModule,
+    CommonModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
