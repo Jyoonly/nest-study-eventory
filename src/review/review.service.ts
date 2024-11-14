@@ -14,7 +14,6 @@ export class ReviewService {
   constructor(private readonly reviewRepository: ReviewRepository) {}
 
   async createReview(payload: CreateReviewPayload): Promise<ReviewDto> {
-
     //예외처리
     // 409 conflict :400도 404도 아닌 경우
     //4. 같은 모임에 같은 사람이 리뷰를 두 개 달려는 요청
@@ -60,7 +59,7 @@ export class ReviewService {
     if (!user) {
       throw new NotFoundException('User가 존재하지 않습니다.');
     }
-      
+
     const createData: CreateReviewData = {
       userId: payload.userId,
       eventId: payload.eventId,
@@ -89,6 +88,4 @@ export class ReviewService {
 
     return ReviewListDto.from(reviews);
   }
-    
 }
-  
