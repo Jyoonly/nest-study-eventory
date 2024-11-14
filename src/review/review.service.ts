@@ -11,10 +11,9 @@ import { ReviewQuery } from './query/review.query';
 
 @Injectable()
 export class ReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository) { }
+  constructor(private readonly reviewRepository: ReviewRepository) {}
 
   async createReview(payload: CreateReviewPayload): Promise<ReviewDto> {
-
     //예외처리
     // 409 conflict :400도 404도 아닌 경우
     //4. 같은 모임에 같은 사람이 리뷰를 두 개 달려는 요청
@@ -87,4 +86,3 @@ export class ReviewService {
     return ReviewListDto.from(reviews);
   }
 }
-
