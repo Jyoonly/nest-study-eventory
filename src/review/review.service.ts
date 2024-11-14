@@ -58,7 +58,6 @@ export class ReviewService {
     if (!user) {
       throw new NotFoundException('User가 존재하지 않습니다.');
     }
-
     const createData: CreateReviewData = {
       userId: payload.userId,
       eventId: payload.eventId,
@@ -87,6 +86,5 @@ export class ReviewService {
 
     return ReviewListDto.from(reviews);
   }
-
 }
 

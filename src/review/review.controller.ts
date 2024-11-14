@@ -21,7 +21,7 @@ import { ReviewQuery } from './query/review.query';
 @Controller('reviews')
 @ApiTags('Review API')
 export class ReviewController {
-  constructor(private readonly reviewService: ReviewService) {}
+  constructor(private readonly reviewService: ReviewService) { }
 
   @Post()
   @ApiOperation({ summary: '리뷰를 생성합니다' })
@@ -29,7 +29,7 @@ export class ReviewController {
   async createReview(@Body() payload: CreateReviewPayload): Promise<ReviewDto> {
     return this.reviewService.createReview(payload);
   }
-<<<<<<< HEAD
+
 
   @Get(':reviewId')
   @ApiOperation({ summary: '리뷰 상세 정보를 가져옵니다' })
@@ -46,8 +46,5 @@ export class ReviewController {
   async getReviews(@Query() query: ReviewQuery): Promise<ReviewListDto> {
     return this.reviewService.getReviews(query);
   }
-    
-=======
 
->>>>>>> week2-f10
 }
