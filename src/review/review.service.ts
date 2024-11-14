@@ -11,7 +11,7 @@ import { ReviewQuery } from './query/review.query';
 
 @Injectable()
 export class ReviewService {
-  constructor(private readonly reviewRepository: ReviewRepository) {}
+  constructor(private readonly reviewRepository: ReviewRepository) { }
 
   async createReview(payload: CreateReviewPayload): Promise<ReviewDto> {
 
@@ -25,7 +25,6 @@ export class ReviewService {
     if (isReviewExist) {
       throw new ConflictException('해당 유저의 리뷰가 이미 존재합니다.');
     }
-
     //2. 해당 모임에 참석한 유저도 아닌데 리뷰를 달려는 요청
     const isUserJoinedEvent = await this.reviewRepository.isUserJoinedEvent(
       payload.userId,
@@ -47,7 +46,6 @@ export class ReviewService {
         'Event가 종료되지 않았습니다. 아직 리뷰를 작성할 수 없습니다.',
       );
     }
-
     // 3. 호스트가 리뷰를 생성하려는 요청
     if (event.hostId === payload.userId) {
       throw new ConflictException(
@@ -60,7 +58,7 @@ export class ReviewService {
     if (!user) {
       throw new NotFoundException('User가 존재하지 않습니다.');
     }
-      
+
     const createData: CreateReviewData = {
       userId: payload.userId,
       eventId: payload.eventId,
@@ -89,6 +87,6 @@ export class ReviewService {
 
     return ReviewListDto.from(reviews);
   }
-    
+
 }
-  
+

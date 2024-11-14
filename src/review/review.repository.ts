@@ -28,7 +28,12 @@ export class ReviewRepository {
       },
     });
   }
+<<<<<<< HEAD
 
+=======
+  
+  // 예외처리..?
+>>>>>>> week2-f10
   async getUserById(userId: number): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: {
@@ -103,5 +108,9 @@ export class ReviewRepository {
       },
     });
   }
+<<<<<<< HEAD
     
+=======
+  
+>>>>>>> week2-f10
 }
