@@ -7,7 +7,7 @@ import { ReviewQuery } from './query/review.query';
 
 @Injectable()
 export class ReviewRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async createReview(data: CreateReviewData): Promise<ReviewData> {
     return this.prisma.review.create({
@@ -103,4 +103,5 @@ export class ReviewRepository {
       },
     });
   }
+
 }
