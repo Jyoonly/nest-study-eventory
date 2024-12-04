@@ -30,6 +30,10 @@ model User {
   eventJoin EventJoin[]
   review    Review[]
 
+  club        Club[]
+  clubJoin ClubJoin[]
+  clubRequest ClubRequest[]
+  
   city     City?    @relation(fields: [cityId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
 
@@ -122,6 +126,7 @@ model Club {
   name        String   @unique
   description String
   hostId      Int      @map("host_id")
+  maxPeople   Int      @map("max_people")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -150,6 +155,7 @@ enum ClubRequestStatus {
   REQUESTED 
   APPROVED
   DELETED
+  @@map("club_request_status")
 }
 
 model ClubRequest {
