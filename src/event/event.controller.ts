@@ -34,7 +34,7 @@ import { PatchUpdateEventPayload } from './payload/patch-update-event.payload';
 @Controller('events')
 @ApiTags('Event API')
 export class EventController {
-  constructor(private readonly eventService: EventService) { }
+  constructor(private readonly eventService: EventService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -64,7 +64,6 @@ export class EventController {
     return this.eventService.getMyEvents(user);
   }
 
-
   @Get(':eventId')
   @ApiOperation({ summary: '모임 상세 조회' })
   @ApiOkResponse({ type: EventDetailDto })
@@ -73,7 +72,6 @@ export class EventController {
   ): Promise<EventDetailDto> {
     return this.eventService.getEventById(eventId);
   }
-
 
   @Put(':eventId')
   @UseGuards(JwtAuthGuard)

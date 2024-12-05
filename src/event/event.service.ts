@@ -18,7 +18,7 @@ import { PatchUpdateEventPayload } from './payload/patch-update-event.payload';
 
 @Injectable()
 export class EventService {
-  constructor(private readonly eventRepository: EventRepository) { }
+  constructor(private readonly eventRepository: EventRepository) {}
 
   async createEvent(
     payload: CreateEventPayload,
