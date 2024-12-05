@@ -34,7 +34,7 @@ import { PatchUpdateEventPayload } from './payload/patch-update-event.payload';
 @Controller('events')
 @ApiTags('Event API')
 export class EventController {
-  constructor(private readonly eventService: EventService) {}
+  constructor(private readonly eventService: EventService) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -55,6 +55,16 @@ export class EventController {
     return this.eventService.getEvents(query);
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '내가 참여한 모임 조회' })
+  @ApiOkResponse({ type: EventListDto })
+  async getMyEvents(@CurrentUser() user: UserBaseInfo): Promise<EventListDto> {
+    return this.eventService.getMyEvents(user);
+  }
+
+
   @Get(':eventId')
   @ApiOperation({ summary: '모임 상세 조회' })
   @ApiOkResponse({ type: EventDetailDto })
@@ -64,14 +74,6 @@ export class EventController {
     return this.eventService.getEventById(eventId);
   }
 
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: '내가 참여한 모임 조회' })
-  @ApiOkResponse({ type: EventListDto })
-  async getMyEvents(@CurrentUser() user: UserBaseInfo): Promise<EventListDto> {
-    return this.eventService.getMyEvents(user);
-  }
 
   @Put(':eventId')
   @UseGuards(JwtAuthGuard)

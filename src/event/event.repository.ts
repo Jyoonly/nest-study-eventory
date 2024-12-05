@@ -9,7 +9,7 @@ import { UpdateEventData } from './type/update-event-data.type';
 
 @Injectable()
 export class EventRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async createEvent(data: CreateEventData): Promise<EventData> {
     return this.prisma.event.create({
@@ -58,13 +58,13 @@ export class EventRepository {
         categoryId: data.categoryId,
         eventCity: data.cityIds
           ? {
-              deleteMany: {},
-              createMany: {
-                data: data.cityIds.map((cityId) => ({
-                  cityId,
-                })),
-              },
-            }
+            deleteMany: {},
+            createMany: {
+              data: data.cityIds.map((cityId) => ({
+                cityId,
+              })),
+            },
+          }
           : undefined,
         startTime: data.startTime,
         endTime: data.endTime,
