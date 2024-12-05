@@ -133,6 +133,7 @@ model Club {
   host        User     @relation(fields: [hostId], references: [id])
   clubJoin    ClubJoin[]
   clubRequest ClubRequest[]
+  event       Event[]
 
   @@map("club")
 }
@@ -162,7 +163,7 @@ model ClubRequest {
   id        Int           @id @default(autoincrement())
   clubId    Int           @map("club_id")
   userId    Int           @map("user_id")
-  status    RequestStatus @default(REQUESTED)
+  status    ClubRequestStatus @default(REQUESTED)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
