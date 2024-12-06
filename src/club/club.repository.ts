@@ -15,10 +15,10 @@ export class ClubRepository {
         description: data.description,
         maxPeople: data.maxPeople,
         clubJoin: {
-            create: {
-                userId: data.hostId,
-            },
-        }
+          create: {
+            userId: data.hostId,
+          },
+        },
       },
       select: {
         id: true,
@@ -35,5 +35,4 @@ export class ClubRepository {
       where: { name },
     });
   }
-
 }

@@ -20,7 +20,7 @@ export class ClubService {
     }
 
     const data: CreateClubData = {
-      hostId: user.id, 
+      hostId: user.id,
       name: payload.name,
       description: payload.description,
       maxPeople: payload.maxPeople,
