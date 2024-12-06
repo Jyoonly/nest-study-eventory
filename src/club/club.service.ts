@@ -1,9 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClubData } from './type/create-club-data.type';
 import { CreateClubPayload } from './payload/create-club.payload';
 import { UserBaseInfo } from 'src/auth/type/user-base-info.type';
 import { ClubDto } from './dto/club.dto';
 import { ClubRepository } from './club.repository';
+import { ClubDetailDto } from './dto/club-detail.dto';
 
 @Injectable()
 export class ClubService {
@@ -29,5 +34,14 @@ export class ClubService {
     const club = await this.clubRepository.createClub(data);
 
     return ClubDto.from(club);
+  }
+
+  async getClubById(clubId: number): Promise<ClubDetailDto> {
+    const club = await this.clubRepository.findClubDetailById(clubId);
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+
+    return ClubDetailDto.from(club);
   }
 }
