@@ -7,7 +7,7 @@ import { ClubRepository } from './club.repository';
 
 @Injectable()
 export class ClubService {
-    constructor(private readonly clubRepository: ClubRepository) { }
+  constructor(private readonly clubRepository: ClubRepository) {}
 
     async createClub(
         payload: CreateClubPayload,
@@ -31,4 +31,5 @@ export class ClubService {
 
         return ClubDto.from(club);
     }
+
 }
