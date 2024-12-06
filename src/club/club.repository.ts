@@ -25,21 +25,18 @@ export class ClubRepository {
     });
   }
 
+  async findClubByName(name: string): Promise<ClubData | null> {
+    return this.prisma.club.findUnique({
+      where: { name },
+    });
+  }
 
-    async findClubByName(name: string): Promise<ClubData | null> {
-        return this.prisma.club.findUnique({
-            where: { name },
-        });
-    }
-
-    async joinClub(clubId: number, userId: number): Promise<void> {
-        await this.prisma.clubJoin.create({
-            data: {
-                clubId,
-                userId,
-            },
-        });
-    }
-
-
+  async joinClub(clubId: number, userId: number): Promise<void> {
+    await this.prisma.clubJoin.create({
+      data: {
+        clubId,
+        userId,
+      },
+    });
+  }
 }
