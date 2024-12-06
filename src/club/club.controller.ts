@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -41,5 +49,4 @@ export class ClubController {
     return this.clubService.getClubById(clubId);
   }
   // 클럽에 딸린 모임, 구성원 등 상세정보 추가.
-  
 }

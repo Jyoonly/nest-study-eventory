@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClubData } from './type/create-club-data.type';
 import { CreateClubPayload } from './payload/create-club.payload';
 import { UserBaseInfo } from 'src/auth/type/user-base-info.type';

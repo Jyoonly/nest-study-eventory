@@ -48,7 +48,7 @@ export class ClubRepository {
 
   async findClubDetailById(id: number): Promise<ClubDetailData | null> {
     return this.prisma.club.findUnique({
-      where: { 
+      where: {
         id,
       },
       select: {
@@ -58,20 +58,20 @@ export class ClubRepository {
         description: true,
         maxPeople: true,
         clubJoin: {
-            where: {
-                user: {
-                    deletedAt: null,
-                },
+          where: {
+            user: {
+              deletedAt: null,
             },
-            
-            select: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
+          },
+
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+              },
             },
+          },
         },
         /*event: {
           select: {
@@ -89,7 +89,7 @@ export class ClubRepository {
             maxPeople: true,
           },
         },*/
-      }
+      },
     });
   }
 

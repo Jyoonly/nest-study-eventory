@@ -70,7 +70,7 @@ export class ClubDetailDto {
       participants: data.clubJoin.map((join) => ({
         id: join.user.id,
         name: join.user.name,
-      })), 
+      })),
     };
   }
 }
