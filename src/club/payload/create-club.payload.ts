@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 
 export class CreateClubPayload {
+    /*
     @IsInt()
     @IsPositive()
     @ApiProperty({
@@ -17,7 +18,7 @@ export class CreateClubPayload {
         type: Number,
     })
     hostId!: number;
-
+    */
     @IsString()
     @ApiProperty({
         description: '이름',

@@ -27,6 +27,7 @@ export class ClubService {
         };
 
         const club = await this.clubRepository.createClub(data);
+        await this.clubRepository.joinClub(club.id, user.id);
 
         return ClubDto.from(club);
     }

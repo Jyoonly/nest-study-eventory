@@ -31,5 +31,14 @@ export class ClubRepository {
         });
     }
 
+    async joinClub(clubId: number, userId: number): Promise<void> {
+        await this.prisma.clubJoin.create({
+            data: {
+                clubId,
+                userId,
+            },
+        });
+    }
+
 
 }
