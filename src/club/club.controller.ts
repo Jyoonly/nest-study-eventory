@@ -58,5 +58,4 @@ export class ClubController {
   ): Promise<ClubDetailDto> {
     return this.clubService.getClubById(clubId);
   }
-  
 }

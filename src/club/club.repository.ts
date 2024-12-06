@@ -101,7 +101,7 @@ export class ClubRepository {
         host: {
           id: query.hostId,
           deletedAt: null,
-        }
+        },
       },
       select: {
         id: true,
