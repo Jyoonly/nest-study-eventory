@@ -14,6 +14,11 @@ export class ClubRepository {
         name: data.name,
         description: data.description,
         maxPeople: data.maxPeople,
+        clubJoin: {
+            create: {
+                userId: data.hostId,
+            },
+        }
       },
       select: {
         id: true,
@@ -31,12 +36,4 @@ export class ClubRepository {
     });
   }
 
-  async joinClub(clubId: number, userId: number): Promise<void> {
-    await this.prisma.clubJoin.create({
-      data: {
-        clubId,
-        userId,
-      },
-    });
-  }
 }

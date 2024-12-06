@@ -20,14 +20,13 @@ export class ClubService {
     }
 
     const data: CreateClubData = {
-      hostId: user.id, //? 어차피 jwt 값으로 들어가는데 swagger 테스트 시 request body에서는 빠지게 해야하나?
+      hostId: user.id, 
       name: payload.name,
       description: payload.description,
       maxPeople: payload.maxPeople,
     };
 
     const club = await this.clubRepository.createClub(data);
-    await this.clubRepository.joinClub(club.id, user.id);
 
     return ClubDto.from(club);
   }
