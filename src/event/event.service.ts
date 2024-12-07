@@ -18,7 +18,7 @@ import { PatchUpdateEventPayload } from './payload/patch-update-event.payload';
 
 @Injectable()
 export class EventService {
-  constructor(private readonly eventRepository: EventRepository) {}
+  constructor(private readonly eventRepository: EventRepository) {} 
 
   async createEvent(
     payload: CreateEventPayload,
@@ -47,6 +47,17 @@ export class EventService {
       );
     }
 
+    if (payload.clubId) {
+      const club = await this.clubRepository.findClubById(payload.clubId);
+      if (!club) {
+        throw new NotFoundException('클럽을 찾을 수 없습니다.');
+      }
+      const isUserJoinedClub = await this.clubRepository.isUserJoinedClub(payload.clubId, user.id);
+      if (!isUserJoinedClub) {
+        throw new ForbiddenException('해당 클럽에 가입된 회원만 모임을 생성할 수 있습니다.');
+      }
+    }
+
     const data: CreateEventData = {
       hostId: user.id,
       title: payload.title,
@@ -56,6 +67,7 @@ export class EventService {
       startTime: payload.startTime,
       endTime: payload.endTime,
       maxPeople: payload.maxPeople,
+      clubId: payload.clubId,
     };
 
     const event = await this.eventRepository.createEvent(data);

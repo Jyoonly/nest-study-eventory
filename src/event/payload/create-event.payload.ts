@@ -80,5 +80,5 @@ export class CreateEventPayload {
     description: '클럽 ID (클럽 전용 모임일 경우)',
     type: Number,
   })
-  clubId?: number; // number | null; 이 나을까?
+  clubId?: number | null;
 }

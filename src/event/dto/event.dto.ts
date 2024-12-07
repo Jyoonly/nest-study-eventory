@@ -59,9 +59,9 @@ export class EventDto {
   @ApiProperty({
     description: '클럽 ID',
     type: Number,
-    required: false,
+    nullable: true,
   })
-  clubId?: number;
+  clubId!: number | null;
 
   static from(data: EventData): EventDto {
     return {
@@ -74,7 +74,7 @@ export class EventDto {
       startTime: data.startTime,
       endTime: data.endTime,
       maxPeople: data.maxPeople,
-      ...(data.clubId !== null && { clubId: data.clubId }),
+      clubId: data.clubId,
     };
   }
 

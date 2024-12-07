@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/services/prisma.service';
 import { CreateEventData } from './type/create-event-data.type';
-import { Category, City } from '@prisma/client';
+import { Category, City, Club } from '@prisma/client';
 import { EventDetailData } from './type/event-detail-data.type';
 import { EventQuery } from './query/event.query';
 import { EventData } from './type/event-data.type';
@@ -33,6 +33,7 @@ export class EventRepository {
             userId: data.hostId,
           },
         },
+        clubId: data.clubId,
       },
       select: {
         id: true,
@@ -48,6 +49,7 @@ export class EventRepository {
         startTime: true,
         endTime: true,
         maxPeople: true,
+        clubId: true,
       },
     });
   }
@@ -129,6 +131,25 @@ export class EventRepository {
         },
       },
     });
+  }
+
+  async findClubById(clubId: number): Promise<Club | null> {
+    return this.prisma.club.findUnique({
+      where: {
+        id: clubId,
+      },
+    });
+  }
+
+  async isUserJoinedClub(clubId: number, userId: number): Promise<boolean> {
+    const clubJoin = await this.prisma.clubJoin.findFirst({
+      where: {
+          clubId,
+          userId,
+        },
+    });
+
+    return !!clubJoin;
   }
 
   async findEventById(id: number): Promise<EventData | null> {
