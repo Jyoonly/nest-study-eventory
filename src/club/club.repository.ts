@@ -5,6 +5,7 @@ import { ClubData } from './type/club-data.type';
 import { ClubDetailData } from './type/club-detail-data.type';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestData } from './type/club-request-data.type';
+import { UpdateClubData } from './type/update-club-data.type';
 
 @Injectable()
 export class ClubRepository {
@@ -22,6 +23,26 @@ export class ClubRepository {
             userId: data.hostId,
           },
         },
+      },
+      select: {
+        id: true,
+        hostId: true,
+        name: true,
+        description: true,
+        maxPeople: true,
+      },
+    });
+  }
+
+  async updateClub(id: number, data: UpdateClubData): Promise<ClubData> {
+    return this.prisma.club.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        maxPeople: data.maxPeople,
       },
       select: {
         id: true,

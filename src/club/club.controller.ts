@@ -28,6 +28,7 @@ import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
 import { HandleClubRequestPayload } from './payload/handle-club-request.payload';
+import { UpdateClubPayload } from './payload/update-club.payload';
 
 @Controller('clubs')
 @ApiTags('Club API')
@@ -62,6 +63,19 @@ export class ClubController {
     @Param('clubId', ParseIntPipe) clubId: number,
   ): Promise<ClubDetailDto> {
     return this.clubService.getClubById(clubId);
+  }
+
+  @Patch(':clubId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '클럽 정보 수정' })
+  @ApiOkResponse({ type: ClubDto })
+  async updateClub(
+    @Param('clubId', ParseIntPipe) clubId: number,
+    @Body() payload: UpdateClubPayload,
+    @CurrentUser() user: UserBaseInfo,
+  ): Promise<ClubDto> {
+    return this.clubService.updateClub(clubId, payload, user);
   }
 
   @Post(':clubId/request')
