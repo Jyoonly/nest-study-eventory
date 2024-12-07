@@ -212,6 +212,17 @@ export class ClubRepository {
     });
   }
 
+  async leaveClub(clubId: number, userId: number): Promise<void> {
+    await this.prisma.clubJoin.delete({
+      where: {
+        clubId_userId: {
+          clubId,
+          userId,
+        },
+      },
+    });
+  }
+
   async findClubDetailById(id: number): Promise<ClubDetailData | null> {
     return this.prisma.club.findUnique({
       where: {
