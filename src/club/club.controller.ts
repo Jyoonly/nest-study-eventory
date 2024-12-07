@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -26,6 +27,7 @@ import { ClubService } from './club.service';
 import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
+import { HandleClubRequestPayload } from './payload/handle-club-request.payload';
 
 @Controller('clubs')
 @ApiTags('Club API')
@@ -87,15 +89,22 @@ export class ClubController {
     return this.clubService.getClubRequests(clubId, user);
   }
 
-  // 고민1)
-  // dto를 따로 만들기
-  // vs
-  // 그냥 userId만 가져오기
-
-  // => dto안만들고 user정보만 가져올수 있나? 애초에 클럽장은 어디까지 볼 수 있지? 유저이름? 유저이메일? .. 흠..
-
-  // dto를 따로 만들고, 만약 클럽장 권한이 생각보다 작으면 dto 안의 요소를 줄이는 방법도 괜찮지 않을까?
-
-  // => 결론: dto를 사용합시다. 필요에 따라 정보노출을 조절하자.
-  // 호스트만 조회 가능한 로직!!!!
+  @Patch(':clubId/request/:requestId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '클럽 가입 신청 승인/거절' })
+  @ApiNoContentResponse()
+  async handleClubRequest(
+    @Param('clubId', ParseIntPipe) clubId: number,
+    @Param('requestId', ParseIntPipe) requestId: number,
+    @Body() payload: HandleClubRequestPayload,
+    @CurrentUser() user: UserBaseInfo,
+  ): Promise<void> {
+    return this.clubService.handleClubRequest(
+      clubId,
+      requestId,
+      payload.action,
+      user,
+    );
+  }
 }
