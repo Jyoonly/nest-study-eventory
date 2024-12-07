@@ -152,18 +152,10 @@ model ClubJoin {
   @@map("club_join")
 }
 
-enum ClubRequestStatus {
-  REQUESTED 
-  APPROVED
-  DELETED
-  @@map("club_request_status")
-}
-
 model ClubRequest {
   id        Int           @id @default(autoincrement())
   clubId    Int           @map("club_id")
   userId    Int           @map("user_id")
-  status    ClubRequestStatus @default(REQUESTED)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
