@@ -6,9 +6,10 @@ import {
 import { CreateClubData } from './type/create-club-data.type';
 import { CreateClubPayload } from './payload/create-club.payload';
 import { UserBaseInfo } from 'src/auth/type/user-base-info.type';
-import { ClubDto } from './dto/club.dto';
+import { ClubDto, ClubListDto } from './dto/club.dto';
 import { ClubRepository } from './club.repository';
 import { ClubDetailDto } from './dto/club-detail.dto';
+import { ClubQuery } from './query/club.query';
 
 @Injectable()
 export class ClubService {
@@ -43,5 +44,11 @@ export class ClubService {
     }
 
     return ClubDetailDto.from(club);
+  }
+
+  async getClubs(query: ClubQuery): Promise<ClubListDto> {
+    const clubs = await this.clubRepository.getClubs(query);
+
+    return ClubListDto.from(clubs);
   }
 }

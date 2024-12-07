@@ -5,21 +5,24 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from 'src/auth/decorator/user.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserBaseInfo } from 'src/auth/type/user-base-info.type';
-import { ClubDto } from './dto/club.dto';
+import { ClubDto, ClubListDto } from './dto/club.dto';
 import { CreateClubPayload } from './payload/create-club.payload';
 import { ClubService } from './club.service';
 import { ClubDetailDto } from './dto/club-detail.dto';
+import { ClubQuery } from './query/club.query';
 
 @Controller('clubs')
 @ApiTags('Club API')
@@ -38,6 +41,13 @@ export class ClubController {
     return this.clubService.createClub(payload, user);
   }
 
+  @Get()
+  @ApiOperation({ summary: '클럽 전체 조회' })
+  @ApiOkResponse({ type: ClubListDto })
+  async getClubs(@Query() query: ClubQuery): Promise<ClubListDto> {
+    return this.clubService.getClubs(query);
+  }
+
   @Get(':clubId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -48,5 +58,4 @@ export class ClubController {
   ): Promise<ClubDetailDto> {
     return this.clubService.getClubById(clubId);
   }
-  // 클럽에 딸린 모임, 구성원 등 상세정보 추가.
 }

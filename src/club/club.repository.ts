@@ -3,6 +3,7 @@ import { PrismaService } from '../common/services/prisma.service';
 import { CreateClubData } from './type/create-club-data.type';
 import { ClubData } from './type/club-data.type';
 import { ClubDetailData } from './type/club-detail-data.type';
+import { ClubQuery } from './query/club.query';
 
 @Injectable()
 export class ClubRepository {
@@ -89,6 +90,25 @@ export class ClubRepository {
             maxPeople: true,
           },
         },*/
+      },
+    });
+  }
+
+  async getClubs(query: ClubQuery): Promise<ClubData[]> {
+    return this.prisma.club.findMany({
+      where: {
+        name: query.name,
+        host: {
+          id: query.hostId,
+          deletedAt: null,
+        },
+      },
+      select: {
+        id: true,
+        hostId: true,
+        name: true,
+        description: true,
+        maxPeople: true,
       },
     });
   }
