@@ -28,6 +28,11 @@ export class EventRepository {
             })),
           },
         },
+        eventJoin: {
+          create: {
+            userId: data.hostId,
+          },
+        },
       },
       select: {
         id: true,

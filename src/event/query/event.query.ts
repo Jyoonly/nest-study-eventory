@@ -29,4 +29,13 @@ export class EventQuery {
     type: Number,
   })
   categoryId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Type(() => Number)
+  @ApiPropertyOptional({
+    description: '클럽 ID(클럽 전용 모임 필터링)',
+    type: Number,
+  })
+  clubId?: number;
 }
