@@ -51,4 +51,32 @@ export class ClubService {
 
     return ClubListDto.from(clubs);
   }
+
+  async requestClub(clubId: number, user: UserBaseInfo): Promise<void> {
+    const club = await this.clubRepository.findClubById(clubId);
+
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    // Error Handling
+    // 1. clubJoin
+    const joineduUsersIds = await this.clubRepository.getJoinedUsersIds(clubId);
+    // 1-1. 이미 가입한 클럽인지 확인
+    if (joineduUsersIds.includes(user.id)) {
+      throw new ConflictException('이미 가입한 클럽입니다.');
+    }
+    // 1-2. 인원이 다 찼는지 확인
+    if (club.maxPeople <= joineduUsersIds.length) {
+      throw new ConflictException('인원이 다 찼습니다.');
+    }
+    // 2. clubRequest
+    const requestedUsersIds =
+      await this.clubRepository.getRequestedUsersIds(clubId);
+    // 2-1. 이미 가입신청한 클럽인지 확인
+    if (requestedUsersIds.includes(user.id)) {
+      throw new ConflictException('이미 가입 신청한 클럽입니다.');
+    }
+
+    await this.clubRepository.requestClub(clubId, user.id);
+  }
 }
