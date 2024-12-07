@@ -30,6 +30,7 @@ import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
 import { HandleClubRequestPayload } from './payload/handle-club-request.payload';
 import { UpdateClubPayload } from './payload/update-club.payload';
+import { ChangeClubHostPayload } from './payload/change-club-host.payload';
 
 @Controller('clubs')
 @ApiTags('Club API')
@@ -79,7 +80,6 @@ export class ClubController {
     return this.clubService.updateClub(clubId, payload, user);
   }
 
-<<<<<<< HEAD
   @Delete(':clubId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -92,8 +92,19 @@ export class ClubController {
     return this.clubService.deleteClub(clubId, user);
   }
 
-=======
->>>>>>> 31814f7 (feat: #107 클럽 수정 기능 추가)
+  @Patch(':clubId/change-host')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '클럽 주최자 변경' })
+  @ApiNoContentResponse()
+  async changeHost(
+    @Param('clubId', ParseIntPipe) clubId: number,
+    @Body() payload: ChangeClubHostPayload,
+    @CurrentUser() user: UserBaseInfo,
+  ): Promise<void> {
+    return this.clubService.changeHost(clubId, payload, user);
+  }
+
   @Post(':clubId/request')
   @HttpCode(204) // No Content
   @UseGuards(JwtAuthGuard)
