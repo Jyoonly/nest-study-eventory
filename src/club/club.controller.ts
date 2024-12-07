@@ -79,6 +79,7 @@ export class ClubController {
     return this.clubService.updateClub(clubId, payload, user);
   }
 
+<<<<<<< HEAD
   @Delete(':clubId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -91,6 +92,8 @@ export class ClubController {
     return this.clubService.deleteClub(clubId, user);
   }
 
+=======
+>>>>>>> 31814f7 (feat: #107 클럽 수정 기능 추가)
   @Post(':clubId/request')
   @HttpCode(204) // No Content
   @UseGuards(JwtAuthGuard)
