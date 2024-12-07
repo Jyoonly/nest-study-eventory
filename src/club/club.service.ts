@@ -10,6 +10,7 @@ import { ClubDto, ClubListDto } from './dto/club.dto';
 import { ClubRepository } from './club.repository';
 import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
+import { ClubRequestListDto } from './dto/club.request.dto';
 
 @Injectable()
 export class ClubService {
@@ -78,5 +79,22 @@ export class ClubService {
     }
 
     await this.clubRepository.requestClub(clubId, user.id);
+  }
+
+  async getClubRequests(
+    clubId: number,
+    user: UserBaseInfo,
+  ): Promise<ClubRequestListDto> {
+    const requests = await this.clubRepository.getClubRequests(clubId);
+
+    const club = await this.clubRepository.findClubById(clubId);
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    if (club.hostId !== user.id) {
+      throw new ConflictException('클럽 주최자만 조회할 수 있습니다.');
+    }
+
+    return ClubRequestListDto.from(requests);
   }
 }
