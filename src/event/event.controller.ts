@@ -51,8 +51,13 @@ export class EventController {
   @Get()
   @ApiOperation({ summary: '모임 전체 또는 필터 조회' })
   @ApiOkResponse({ type: EventListDto })
-  async getEvents(@Query() query: EventQuery): Promise<EventListDto> {
-    return this.eventService.getEvents(query);
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getEvents(
+    @Query() query: EventQuery,
+    @CurrentUser() user: UserBaseInfo
+  ): Promise<EventListDto> {
+    return this.eventService.getEvents(query, user);
   }
 
   @Get('me')

@@ -6,6 +6,7 @@ import { EventDetailData } from './type/event-detail-data.type';
 import { EventQuery } from './query/event.query';
 import { EventData } from './type/event-data.type';
 import { UpdateEventData } from './type/update-event-data.type';
+import { UserBaseInfo } from 'src/auth/type/user-base-info.type';
 
 @Injectable()
 export class EventRepository {
@@ -91,6 +92,7 @@ export class EventRepository {
         startTime: true,
         endTime: true,
         maxPeople: true,
+        clubId: true,
       },
     });
   }
@@ -171,24 +173,34 @@ export class EventRepository {
         startTime: true,
         endTime: true,
         maxPeople: true,
+        clubId: true,
       },
     });
   }
 
   async getEvents(query: EventQuery): Promise<EventData[]> {
-    return this.prisma.event.findMany({
-      where: {
-        categoryId: query.categoryId,
-        eventCity: {
-          some: {
-            cityId: query.cityId,
-          },
-        },
-        host: {
-          id: query.hostId,
-          deletedAt: null,
+
+    const filters: any = {
+      categoryId: query.categoryId,
+      eventCity: {
+        some: {
+          cityId: query.cityId,
         },
       },
+      host: {
+        id: query.hostId,
+        deletedAt: null,
+      },
+    };
+
+    if (query.clubId) {
+      filters.clubId = query.clubId;
+    } else {
+      filters.clubId = null;
+    }
+    
+    return this.prisma.event.findMany({
+      where: filters,
       select: {
         id: true,
         hostId: true,
@@ -203,6 +215,7 @@ export class EventRepository {
         startTime: true,
         endTime: true,
         maxPeople: true,
+        clubId: true,
       },
     });
   }
@@ -230,6 +243,7 @@ export class EventRepository {
         startTime: true,
         endTime: true,
         maxPeople: true,
+        clubId: true,
       },
     });
   }
@@ -314,6 +328,7 @@ export class EventRepository {
             description: true,
           },
         },
+        clubId: true,
       },
     });
   }

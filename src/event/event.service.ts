@@ -48,11 +48,11 @@ export class EventService {
     }
 
     if (payload.clubId) {
-      const club = await this.clubRepository.findClubById(payload.clubId);
+      const club = await this.eventRepository.findClubById(payload.clubId);
       if (!club) {
         throw new NotFoundException('클럽을 찾을 수 없습니다.');
       }
-      const isUserJoinedClub = await this.clubRepository.isUserJoinedClub(payload.clubId, user.id);
+      const isUserJoinedClub = await this.eventRepository.isUserJoinedClub(payload.clubId, user.id);
       if (!isUserJoinedClub) {
         throw new ForbiddenException('해당 클럽에 가입된 회원만 모임을 생성할 수 있습니다.');
       }
@@ -75,7 +75,17 @@ export class EventService {
     return EventDto.from(event);
   }
 
-  async getEvents(query: EventQuery): Promise<EventListDto> {
+  async getEvents(query: EventQuery, user: UserBaseInfo): Promise<EventListDto> {
+    if (query.clubId) {
+      const club = await this.eventRepository.findClubById(query.clubId);
+      if (!club) {
+        throw new NotFoundException('클럽을 찾을 수 없습니다.');
+      }
+      const isUserJoinedClub = await this.eventRepository.isUserJoinedClub(query.clubId, user.id);
+      if (!isUserJoinedClub) {
+        throw new ForbiddenException('해당 클럽에 가입된 회원만 모임을 조회할 수 있습니다.');
+      }
+    }
     const events = await this.eventRepository.getEvents(query);
 
     return EventListDto.from(events);
