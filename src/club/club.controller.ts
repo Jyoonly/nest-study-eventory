@@ -116,7 +116,7 @@ export class ClubController {
     return this.clubService.getClubRequests(clubId, user);
   }
 
-  @Patch(':clubId/requests/:requestId') //그냥 경로를 /requests/:requestId로 바꾸는게 나을까요? url 통일성 고려해서 뒀던건데 clubId가 필요없는 값이 되어서..
+  @Patch(':clubId/request/:requestId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '클럽 가입 신청 승인/거절' })
