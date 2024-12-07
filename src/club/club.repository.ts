@@ -54,6 +54,27 @@ export class ClubRepository {
     });
   }
 
+  async deleteClub(id: number): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.clubJoin.deleteMany({
+        where: {
+          clubId: id,
+        },
+      }),
+      this.prisma.clubRequest.deleteMany({
+        where: {
+          clubId: id,
+        },
+      }),
+      this.prisma.club.delete({
+        where: {
+          id,
+        },
+      }),
+      // event는 club이 삭제돼도 지울 필요 없을듯..? 그냥 두자.
+    ]);
+  }
+
   async findClubByName(name: string): Promise<ClubData | null> {
     return this.prisma.club.findUnique({
       where: { name },
