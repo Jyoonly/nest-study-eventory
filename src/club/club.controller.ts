@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -11,6 +12,7 @@ import {
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -57,5 +59,18 @@ export class ClubController {
     @Param('clubId', ParseIntPipe) clubId: number,
   ): Promise<ClubDetailDto> {
     return this.clubService.getClubById(clubId);
+  }
+
+  @Post(':clubId/request')
+  @HttpCode(204) // No Content
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '클럽 가입 신청' })
+  @ApiNoContentResponse()
+  async requestClub(
+    @Param('clubId', ParseIntPipe) clubId: number,
+    @CurrentUser() user: UserBaseInfo,
+  ): Promise<void> {
+    return this.clubService.requestClub(clubId, user);
   }
 }

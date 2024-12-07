@@ -38,8 +38,55 @@ export class ClubRepository {
     });
   }
 
-  async joinClub(clubId: number, userId: number): Promise<void> {
-    await this.prisma.clubJoin.create({
+  async findClubById(id: number): Promise<ClubData | null> {
+    return this.prisma.club.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        hostId: true,
+        name: true,
+        description: true,
+        maxPeople: true,
+      },
+    });
+  }
+
+  async getJoinedUsersIds(clubId: number): Promise<number[]> {
+    const data = await this.prisma.clubJoin.findMany({
+      where: {
+        clubId,
+        user: {
+          deletedAt: null,
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    return data.map((d) => d.userId);
+  }
+
+  async getRequestedUsersIds(clubId: number): Promise<number[]> {
+    const data = await this.prisma.clubRequest.findMany({
+      where: {
+        clubId,
+        user: {
+          deletedAt: null,
+        },
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    return data.map((d) => d.userId);
+  }
+
+  async requestClub(clubId: number, userId: number): Promise<void> {
+    await this.prisma.clubRequest.create({
       data: {
         clubId,
         userId,
