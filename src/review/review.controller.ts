@@ -48,12 +48,15 @@ export class ReviewController {
   }
 
   @Get(':reviewId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: '리뷰 상세 정보를 가져옵니다' })
   @ApiOkResponse({ type: ReviewDto })
   async getReviewById(
     @Param('reviewId', ParseIntPipe) reviewId: number,
+    @CurrentUser() user: UserBaseInfo,
   ): Promise<ReviewDto> {
-    return this.reviewService.getReviewById(reviewId);
+    return this.reviewService.getReviewById(reviewId, user);
   }
 
   @Get()
