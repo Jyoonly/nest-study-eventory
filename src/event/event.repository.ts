@@ -180,25 +180,20 @@ export class EventRepository {
 
   async getEvents(query: EventQuery): Promise<EventData[]> {
 
-    const filters: any = {
-      categoryId: query.categoryId,
-      eventCity: {
-        some: {
-          cityId: query.cityId,
-        },
-      },
-      host: {
-        id: query.hostId,
-        deletedAt: null,
-      },
-    };
-
-    if (query.clubId) {
-      filters.clubId = query.clubId;
-    }
-    
     return this.prisma.event.findMany({
-      where: filters,
+      where: {
+        categoryId: query.categoryId,
+        eventCity: {
+          some: {
+            cityId: query.cityId,
+          },
+        },
+        host: {
+          id: query.hostId,
+          deletedAt: null,
+        },
+        clubId: query.clubId,
+      },
       select: {
         id: true,
         hostId: true,
