@@ -177,10 +177,35 @@ export class EventRepository {
       },
     });
   }
+  async getJoinedClubIds(userId: number): Promise<number[]> {
+    const data = await this.prisma.clubJoin.findMany({
+      where: {
+        userId,
+      },
+      select: {
+        clubId: true,
+      },
+    });
 
-  async getEvents(query: EventQuery): Promise<EventData[]> {
+    return data.map((d) => d.clubId);
+  }
+
+  async getEvents(query: EventQuery, userId: number): Promise<EventData[]> {
+    const joinedClubs = await this.getJoinedClubIds(userId);
     return this.prisma.event.findMany({
       where: {
+        OR: [
+          { clubId: null , isArchived: false}, //일반모임
+          { clubId: { in: joinedClubs} }, //내가 가입한 클럽 모임
+          {
+            isArchived: true,
+            eventJoin: {
+              some: {
+                userId,
+              },// 내가 참여한 아카이브된 모임
+            }
+          }
+        ],
         categoryId: query.categoryId,
         eventCity: {
           some: {
