@@ -70,12 +70,15 @@ export class EventController {
   }
 
   @Get(':eventId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: '모임 상세 조회' })
   @ApiOkResponse({ type: EventDetailDto })
   async getEventById(
     @Param('eventId', ParseIntPipe) eventId: number,
+    @CurrentUser() user: UserBaseInfo,
   ): Promise<EventDetailDto> {
-    return this.eventService.getEventById(eventId);
+    return this.eventService.getEventById(eventId, user);
   }
 
   @Put(':eventId')
