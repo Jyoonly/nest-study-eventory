@@ -79,8 +79,8 @@ export class ReviewService {
     return ReviewDto.from(review);
   }
 
-  async getReviews(query: ReviewQuery): Promise<ReviewListDto> {
-    const reviews = await this.reviewRepository.getReviews(query);
+  async getReviews(query: ReviewQuery, user: UserBaseInfo): Promise<ReviewListDto> {
+    const reviews = await this.reviewRepository.getReviews(query, user.id);
 
     return ReviewListDto.from(reviews);
   }

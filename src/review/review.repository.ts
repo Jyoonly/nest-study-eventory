@@ -95,7 +95,7 @@ export class ReviewRepository {
     });
   }
 
-  async getReviews(query: ReviewQuery): Promise<ReviewData[]> {
+  async getReviews(query: ReviewQuery, userId: number): Promise<ReviewData[]> {
     return this.prisma.review.findMany({
       where: {
         eventId: query.eventId,
@@ -103,6 +103,31 @@ export class ReviewRepository {
           deletedAt: null,
           id: query.userId,
         },
+        event: {
+          OR: [
+            // 일반 모임
+            { clubId: null, isArchived: false },
+            // 클럽 모임. 가입자만 조회 가능
+            {
+              club: {
+                clubJoin: {
+                  some: {
+                    userId,
+                  },
+                },
+              },
+            },
+            // 아카이브된 모임. 참여자만 조회 가능
+            {
+              isArchived: true,
+              eventJoin: {
+                some: {
+                  userId,
+                },
+              },
+            },
+          ],
+        }
       },
       select: {
         id: true,
