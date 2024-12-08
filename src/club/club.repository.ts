@@ -4,6 +4,7 @@ import { CreateClubData } from './type/create-club-data.type';
 import { ClubData } from './type/club-data.type';
 import { ClubDetailData } from './type/club-detail-data.type';
 import { ClubQuery } from './query/club.query';
+import { ClubRequestData } from './type/club-request-data.type';
 
 @Injectable()
 export class ClubRepository {
@@ -156,6 +157,24 @@ export class ClubRepository {
         name: true,
         description: true,
         maxPeople: true,
+      },
+    });
+  }
+
+  async getClubRequests(clubId: number): Promise<ClubRequestData[]> {
+    return this.prisma.clubRequest.findMany({
+      where: {
+        clubId,
+      },
+      select: {
+        id: true,
+        userId: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
       },
     });
   }
