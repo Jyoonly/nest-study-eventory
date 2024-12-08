@@ -195,8 +195,6 @@ export class EventRepository {
 
     if (query.clubId) {
       filters.clubId = query.clubId;
-    } else {
-      filters.clubId = null;
     }
     
     return this.prisma.event.findMany({

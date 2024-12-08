@@ -93,8 +93,10 @@ export class EventDetailDto {
   @ApiProperty({
     description: '클럽 ID',
     type: Number,
-    required: false,
+    nullable: true,
   })
+  clubId!: number | null;
+
   static from(data: EventDetailData): EventDetailDto {
     return {
       id: data.id,
@@ -117,7 +119,7 @@ export class EventDetailDto {
           : data.endTime < new Date()
             ? EventStatus.COMPLETED
             : EventStatus.ONGOING,
-      ...(data.clubId !== null && { clubId: data.clubId }),
+      clubId: data.clubId,
     };
   }
 }
