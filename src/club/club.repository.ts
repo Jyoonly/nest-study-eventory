@@ -179,11 +179,10 @@ export class ClubRepository {
     });
   }
 
-  async findClubRequest(clubId: number, requestId: number) {
-    return this.prisma.clubRequest.findFirst({
+  async findClubRequest(requestId: number) {
+    return this.prisma.clubRequest.findUnique({
       where: {
         id: requestId,
-        clubId,
       },
       select: {
         id: true,

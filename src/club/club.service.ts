@@ -101,15 +101,11 @@ export class ClubService {
   }
 
   async handleClubRequest(
-    clubId: number,
     requestId: number,
     action: 'APPROVE' | 'REJECT',
     user: UserBaseInfo,
   ): Promise<void> {
-    const request = await this.clubRepository.findClubRequest(
-      clubId,
-      requestId,
-    );
+    const request = await this.clubRepository.findClubRequest(requestId);
     if (!request) {
       throw new NotFoundException('해당 클럽의 가입 신청을 찾을 수 없습니다.');
     }
@@ -122,13 +118,11 @@ export class ClubService {
     if (action === 'APPROVE') {
       await this.clubRepository.approveClubRequest(
         requestId,
-        clubId,
+        request.club.id,
         request.userId,
       );
     } else if (action === 'REJECT') {
       await this.clubRepository.rejectClubRequest(requestId);
-    } else {
-      throw new BadRequestException('잘못된 요청입니다.');
     }
   }
 }
