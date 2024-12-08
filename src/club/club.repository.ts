@@ -74,15 +74,16 @@ export class ClubRepository {
           },
         },
       });
-      
-      await tx.event.deleteMany({ 
+
+      await tx.event.deleteMany({
         where: {
           clubId,
           startTime: { gt: new Date() },
         },
       });
 
-      await tx.event.updateMany({ // 시작된 모임 아카이브
+      await tx.event.updateMany({
+        // 시작된 모임 아카이브
         where: {
           clubId,
           startTime: { lte: new Date() },
