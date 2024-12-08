@@ -243,11 +243,11 @@ export class ClubRepository {
       await tx.eventCity.deleteMany({
         where: {
           event: {
-            hostId : userId,
+            hostId: userId,
             startTime: {
               gt: new Date(),
             },
-          }
+          },
         },
       });
       // 모임 삭제 (호스트인 경우만)
