@@ -30,6 +30,7 @@ import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
 import { HandleClubRequestPayload } from './payload/handle-club-request.payload';
 import { UpdateClubPayload } from './payload/update-club.payload';
+import { ChangeClubHostPayload } from './payload/change-club-host.payload';
 
 @Controller('clubs')
 @ApiTags('Club API')
@@ -91,6 +92,19 @@ export class ClubController {
     return this.clubService.deleteClub(clubId, user);
   }
 
+  @Patch(':clubId/change-host')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '클럽 주최자 변경' })
+  @ApiNoContentResponse()
+  async changeHost(
+    @Param('clubId', ParseIntPipe) clubId: number,
+    @Body() payload: ChangeClubHostPayload,
+    @CurrentUser() user: UserBaseInfo,
+  ): Promise<void> {
+    return this.clubService.changeHost(clubId, payload, user);
+  }
+
   @Post(':clubId/request')
   @HttpCode(204) // No Content
   @UseGuards(JwtAuthGuard)
@@ -116,7 +130,7 @@ export class ClubController {
     return this.clubService.getClubRequests(clubId, user);
   }
 
-  @Patch(':clubId/requests/:requestId') //그냥 경로를 /requests/:requestId로 바꾸는게 나을까요? url 통일성 고려해서 뒀던건데 clubId가 필요없는 값이 되어서..
+  @Patch(':clubId/request/:requestId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: '클럽 가입 신청 승인/거절' })

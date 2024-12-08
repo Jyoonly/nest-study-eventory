@@ -114,6 +114,41 @@ export class ClubRepository {
     });
   }
 
+  async findUserById(userId: number): Promise<{ id: number } | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+  }
+
+  async isJoinedUser(clubId: number, userId: number): Promise<boolean> {
+    const clubJoin = await this.prisma.clubJoin.findFirst({
+      where: {
+        clubId,
+        userId,
+      },
+    });
+
+    return !!clubJoin;
+  }
+
+  async changeHost(clubId: number, newHostId: number): Promise<void> {
+    await this.prisma.club.update({
+      where: {
+        id: clubId,
+      },
+      data: {
+        hostId: newHostId,
+      },
+    });
+  }
+
   async findClubByName(name: string): Promise<ClubData | null> {
     return this.prisma.club.findUnique({
       where: { name },

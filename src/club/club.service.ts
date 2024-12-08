@@ -16,6 +16,7 @@ import { ClubRequestListDto } from './dto/club.request.dto';
 import { ClubRequestAction } from './enum/club.enum';
 import { UpdateClubPayload } from './payload/update-club.payload';
 import { UpdateClubData } from './type/update-club-data.type';
+import { ChangeClubHostPayload } from './payload/change-club-host.payload';
 
 @Injectable()
 export class ClubService {
@@ -101,6 +102,30 @@ export class ClubService {
     }
 
     await this.clubRepository.deleteClub(clubId);
+  }
+
+  async changeHost(
+    clubId: number,
+    payload: ChangeClubHostPayload,
+    user: UserBaseInfo,
+  ): Promise<void> {
+    const club = await this.clubRepository.findClubById(clubId);
+
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    if (club.hostId !== user.id) {
+      throw new ForbiddenException('클럽 주최자만 변경할 수 있습니다.');
+    }
+    const isJoinedUser = await this.clubRepository.isJoinedUser(
+      clubId,
+      payload.newHostId,
+    );
+    if (!isJoinedUser) {
+      throw new NotFoundException('클럽원이 아닙니다.');
+    }
+
+    await this.clubRepository.changeHost(clubId, payload.newHostId);
   }
 
   async requestClub(clubId: number, user: UserBaseInfo): Promise<void> {
