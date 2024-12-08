@@ -117,7 +117,10 @@ export class ClubService {
     if (club.hostId !== user.id) {
       throw new ForbiddenException('클럽 주최자만 변경할 수 있습니다.');
     }
-    const isJoinedUser = await this.clubRepository.isJoinedUser(clubId, payload.newHostId);
+    const isJoinedUser = await this.clubRepository.isJoinedUser(
+      clubId,
+      payload.newHostId,
+    );
     if (!isJoinedUser) {
       throw new NotFoundException('클럽원이 아닙니다.');
     }
