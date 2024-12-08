@@ -199,6 +199,24 @@ export class ClubService {
     }
   }
 
+  async leaveClub(clubId: number, user: UserBaseInfo): Promise<void> {
+    const club = await this.clubRepository.findClubById(clubId);
+
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    if (club.hostId === user.id) {
+      throw new ConflictException('클럽 주최자는 클럽에서 나갈 수 없습니다.');
+    }
+
+    const joineduUsersIds = await this.clubRepository.getJoinedUsersIds(clubId);
+
+    if (!joineduUsersIds.includes(user.id)) {
+      throw new ConflictException('가입하지 않은 클럽입니다.');
+    }
+
+    await this.clubRepository.leaveClub(clubId, user.id);
+  }
   private validateNullOf(payload: UpdateClubPayload): UpdateClubData {
     if (payload.name === null) {
       throw new BadRequestException('name은 null이 될 수 없습니다.');
