@@ -343,6 +343,7 @@ export class EventRepository {
           },
         },
         clubId: true,
+        isArchived: true,
       },
     });
   }
