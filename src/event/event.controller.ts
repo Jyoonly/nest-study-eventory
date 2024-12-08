@@ -110,6 +110,7 @@ export class EventController {
   @Delete(':eventId')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: '모임 삭제' })
   @ApiNoContentResponse()
   async deleteEvent(
     @Param('eventId', ParseIntPipe) eventId: number,

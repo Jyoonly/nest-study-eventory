@@ -184,6 +184,11 @@ export class EventService {
     if (!event) {
       throw new NotFoundException('모임을 찾을 수 없습니다.');
     }
+    // 아카이브 여부 확인
+    const isEventArchived = await this.eventRepository.isEventArchived(eventId);
+    if (isEventArchived) {
+      throw new ConflictException('아카이브된 이벤트는 수정할 수 없습니다.');
+    }
 
     if (event.hostId !== user.id) {
       throw new ForbiddenException('모임 주최자만 수정할 수 있습니다');
