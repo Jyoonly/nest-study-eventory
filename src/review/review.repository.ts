@@ -68,11 +68,11 @@ export class ReviewRepository {
       where: {
         clubId,
         userId,
-        },
+      },
     });
     return !!clubJoin;
   }
-  
+
   async isUserJoinedEvent(userId: number, eventId: number): Promise<boolean> {
     const event = await this.prisma.eventJoin.findUnique({
       where: {
@@ -137,7 +137,7 @@ export class ReviewRepository {
               },
             },
           ],
-        }
+        },
       },
       select: {
         id: true,
