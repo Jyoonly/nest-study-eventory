@@ -277,6 +277,18 @@ export class EventService {
       throw new ConflictException('인원이 가득 찼습니다.');
     }
 
+    if (event.clubId) {
+      const isUserJoinedClub = await this.eventRepository.isUserJoinedClub(
+        event.clubId,
+        user.id,
+      );
+      if (!isUserJoinedClub) {
+        throw new ForbiddenException(
+          '해당 클럽에 가입된 회원만 모임에 참여할 수 있습니다.',
+        );
+      }
+    }
+
     await this.eventRepository.joinEvent(eventId, user.id);
   }
 
