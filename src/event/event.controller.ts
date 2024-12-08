@@ -55,7 +55,7 @@ export class EventController {
   @ApiBearerAuth()
   async getEvents(
     @Query() query: EventQuery,
-    @CurrentUser() user: UserBaseInfo
+    @CurrentUser() user: UserBaseInfo,
   ): Promise<EventListDto> {
     return this.eventService.getEvents(query, user);
   }
