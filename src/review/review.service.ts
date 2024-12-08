@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -69,11 +70,29 @@ export class ReviewService {
     return ReviewDto.from(review);
   }
 
-  async getReviewById(reviewId: number): Promise<ReviewDto> {
+  async getReviewById(reviewId: number, user: UserBaseInfo): Promise<ReviewDto> {
     const review = await this.reviewRepository.getReviewById(reviewId);
 
     if (!review) {
       throw new NotFoundException('Review가 존재하지 않습니다.');
+    }
+    const event = await this.reviewRepository.getEventById(review.eventId);
+    if (event!.clubId) { 
+      const isUserJoinedClub = await this.reviewRepository.isUserJoinedClub(
+        event!.clubId,
+        user.id,
+      );
+      if (!isUserJoinedClub) {
+        throw new ForbiddenException('클럽에 가입하지 않은 유저는 클럽 전용 모임의 리뷰를 볼 수 없습니다.');
+      }
+    }
+    
+    const isUserJoinedEvent = await this.reviewRepository.isUserJoinedEvent(
+      user.id,
+      review.eventId,
+    );
+    if (event!.isArchived && !isUserJoinedEvent) {
+      throw new ForbiddenException('아카이브된 모임의 리뷰는 참여자만 조회할 수 있습니다.');
     }
 
     return ReviewDto.from(review);
