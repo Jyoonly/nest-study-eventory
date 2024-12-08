@@ -96,24 +96,37 @@ export class EventService {
     return EventListDto.from(events);
   }
 
-  async getEventById(eventId: number, user: UserBaseInfo): Promise<EventDetailDto> {
+  async getEventById(
+    eventId: number,
+    user: UserBaseInfo,
+  ): Promise<EventDetailDto> {
     const event = await this.eventRepository.findEventDetailById(eventId);
 
     if (!event) {
       throw new NotFoundException('모임을 찾을 수 없습니다.');
     }
-    
+
     if (event.clubId) {
-      const isUserJoinedClub = await this.eventRepository.isUserJoinedClub(event.clubId, user.id);
+      const isUserJoinedClub = await this.eventRepository.isUserJoinedClub(
+        event.clubId,
+        user.id,
+      );
       if (!isUserJoinedClub) {
-        throw new ForbiddenException('해당 클럽에 가입된 회원만 모임을 조회할 수 있습니다.');
+        throw new ForbiddenException(
+          '해당 클럽에 가입된 회원만 모임을 조회할 수 있습니다.',
+        );
       }
     }
 
     const isEventArchived = await this.eventRepository.isEventArchived(eventId);
-    const isUserJoinedEvent = await this.eventRepository.isUserJoinedEvent(eventId, user.id);
+    const isUserJoinedEvent = await this.eventRepository.isUserJoinedEvent(
+      eventId,
+      user.id,
+    );
     if (isEventArchived && !isUserJoinedEvent) {
-      throw new ForbiddenException('아카이브된 모임은 참여자만 조회할 수 있습니다.');
+      throw new ForbiddenException(
+        '아카이브된 모임은 참여자만 조회할 수 있습니다.',
+      );
     }
 
     return EventDetailDto.from(event);
