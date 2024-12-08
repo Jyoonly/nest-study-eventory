@@ -54,25 +54,44 @@ export class ClubRepository {
     });
   }
 
-  async deleteClub(id: number): Promise<void> {
-    await this.prisma.$transaction([
-      this.prisma.clubJoin.deleteMany({
+  async deleteClub(clubId: number): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      await tx.event.deleteMany({ // 시작되지 않은 모임 삭제
         where: {
-          clubId: id,
+          clubId,
+          startTime: { gt: new Date() },
         },
-      }),
-      this.prisma.clubRequest.deleteMany({
+      });
+
+      await tx.event.updateMany({ // 시작된 모임 아카이브
         where: {
-          clubId: id,
+          clubId,
+          startTime: { lte: new Date() },
         },
-      }),
-      this.prisma.club.delete({
+        data: {
+          clubId: null, //클럽 의존성 제거
+          isArchived: true,
+        },
+      });
+
+      await tx.clubJoin.deleteMany({
         where: {
-          id,
+          clubId,
         },
-      }),
-      // event는 club이 삭제돼도 지울 필요 없을듯..? 그냥 두자.
-    ]);
+      });
+
+      await tx.clubRequest.deleteMany({
+        where: {
+          clubId,
+        },
+      });
+
+      await tx.club.delete({
+        where: {
+          id: clubId,
+        },
+      });
+    });
   }
 
   async findClubByName(name: string): Promise<ClubData | null> {
