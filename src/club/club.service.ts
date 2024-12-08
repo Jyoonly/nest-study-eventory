@@ -13,6 +13,7 @@ import { ClubRepository } from './club.repository';
 import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
+import { ClubRequestAction } from './enum/club.enum';
 
 @Injectable()
 export class ClubService {
@@ -102,7 +103,7 @@ export class ClubService {
 
   async handleClubRequest(
     requestId: number,
-    action: 'APPROVE' | 'REJECT',
+    action: ClubRequestAction,
     user: UserBaseInfo,
   ): Promise<void> {
     const request = await this.clubRepository.findClubRequest(requestId);
@@ -115,13 +116,13 @@ export class ClubService {
       );
     }
 
-    if (action === 'APPROVE') {
+    if (action === ClubRequestAction.APPROVE) {
       await this.clubRepository.approveClubRequest(
         requestId,
         request.club.id,
         request.userId,
       );
-    } else if (action === 'REJECT') {
+    } else if (action === ClubRequestAction.REJECT) {
       await this.clubRepository.rejectClubRequest(requestId);
     }
   }
