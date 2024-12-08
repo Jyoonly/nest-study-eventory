@@ -14,6 +14,8 @@ import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
 import { ClubRequestAction } from './enum/club.enum';
+import { UpdateClubPayload } from './payload/update-club.payload';
+import { UpdateClubData } from './type/update-club-data.type';
 
 @Injectable()
 export class ClubService {
@@ -54,6 +56,51 @@ export class ClubService {
     const clubs = await this.clubRepository.getClubs(query);
 
     return ClubListDto.from(clubs);
+  }
+
+  async updateClub(
+    clubId: number,
+    payload: UpdateClubPayload,
+    user: UserBaseInfo,
+  ): Promise<ClubDto> {
+    const data = this.validateNullOf(payload);
+
+    const club = await this.clubRepository.findClubById(clubId);
+
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    if (club.hostId !== user.id) {
+      throw new ForbiddenException('클럽 주최자만 수정할 수 있습니다.');
+    }
+
+    if (payload.maxPeople) {
+      const participantsIds =
+        await this.clubRepository.getJoinedUsersIds(clubId);
+
+      if (payload.maxPeople < participantsIds.length) {
+        throw new ConflictException(
+          '현재 참여 중인 인원보다 적은 수로 수정할 수 없습니다.',
+        );
+      }
+    }
+
+    const updatedClub = await this.clubRepository.updateClub(clubId, data);
+
+    return ClubDto.from(updatedClub);
+  }
+
+  async deleteClub(clubId: number, user: UserBaseInfo): Promise<void> {
+    const club = await this.clubRepository.findClubById(clubId);
+
+    if (!club) {
+      throw new NotFoundException('클럽을 찾을 수 없습니다.');
+    }
+    if (club.hostId !== user.id) {
+      throw new ForbiddenException('클럽 주최자만 삭제할 수 있습니다.');
+    }
+
+    await this.clubRepository.deleteClub(clubId);
   }
 
   async requestClub(clubId: number, user: UserBaseInfo): Promise<void> {
@@ -125,5 +172,25 @@ export class ClubService {
     } else if (action === ClubRequestAction.REJECT) {
       await this.clubRepository.rejectClubRequest(requestId);
     }
+  }
+
+  private validateNullOf(payload: UpdateClubPayload): UpdateClubData {
+    if (payload.name === null) {
+      throw new BadRequestException('name은 null이 될 수 없습니다.');
+    }
+
+    if (payload.description === null) {
+      throw new BadRequestException('description은 null이 될 수 없습니다.');
+    }
+
+    if (payload.maxPeople === null) {
+      throw new BadRequestException('maxPeople은 null이 될 수 없습니다.');
+    }
+
+    return {
+      name: payload.name,
+      description: payload.description,
+      maxPeople: payload.maxPeople,
+    };
   }
 }

@@ -5,6 +5,7 @@ import { ClubData } from './type/club-data.type';
 import { ClubDetailData } from './type/club-detail-data.type';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestData } from './type/club-request-data.type';
+import { UpdateClubData } from './type/update-club-data.type';
 
 @Injectable()
 export class ClubRepository {
@@ -30,6 +31,86 @@ export class ClubRepository {
         description: true,
         maxPeople: true,
       },
+    });
+  }
+
+  async updateClub(id: number, data: UpdateClubData): Promise<ClubData> {
+    return this.prisma.club.update({
+      where: {
+        id,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        maxPeople: data.maxPeople,
+      },
+      select: {
+        id: true,
+        hostId: true,
+        name: true,
+        description: true,
+        maxPeople: true,
+      },
+    });
+  }
+
+  async deleteClub(clubId: number): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      // 시작되지 않은 모임 삭제 (연관된 데이터도 삭제)
+      await tx.eventCity.deleteMany({
+        where: {
+          event: {
+            clubId,
+            startTime: { gt: new Date() },
+          },
+        },
+      });
+
+      await tx.eventJoin.deleteMany({
+        where: {
+          event: {
+            clubId,
+            startTime: { gt: new Date() },
+          },
+        },
+      });
+
+      await tx.event.deleteMany({
+        where: {
+          clubId,
+          startTime: { gt: new Date() },
+        },
+      });
+
+      await tx.event.updateMany({
+        // 시작된 모임 아카이브
+        where: {
+          clubId,
+          startTime: { lte: new Date() },
+        },
+        data: {
+          clubId: null, //클럽 의존성 제거
+          isArchived: true,
+        },
+      });
+
+      await tx.clubJoin.deleteMany({
+        where: {
+          clubId,
+        },
+      });
+
+      await tx.clubRequest.deleteMany({
+        where: {
+          clubId,
+        },
+      });
+
+      await tx.club.delete({
+        where: {
+          id: clubId,
+        },
+      });
     });
   }
 
