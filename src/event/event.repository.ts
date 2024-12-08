@@ -146,9 +146,9 @@ export class EventRepository {
   async isUserJoinedClub(clubId: number, userId: number): Promise<boolean> {
     const clubJoin = await this.prisma.clubJoin.findFirst({
       where: {
-          clubId,
-          userId,
-        },
+        clubId,
+        userId,
+      },
     });
 
     return !!clubJoin;
@@ -179,7 +179,6 @@ export class EventRepository {
   }
 
   async getEvents(query: EventQuery): Promise<EventData[]> {
-
     return this.prisma.event.findMany({
       where: {
         categoryId: query.categoryId,

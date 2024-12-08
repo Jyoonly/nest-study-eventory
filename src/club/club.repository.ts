@@ -149,7 +149,6 @@ export class ClubRepository {
     });
   }
 
-
   async findClubByName(name: string): Promise<ClubData | null> {
     return this.prisma.club.findUnique({
       where: { name },
