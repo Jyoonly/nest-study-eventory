@@ -213,13 +213,62 @@ export class ClubRepository {
   }
 
   async leaveClub(clubId: number, userId: number): Promise<void> {
-    await this.prisma.clubJoin.delete({
-      where: {
-        clubId_userId: {
-          clubId,
-          userId,
+    await this.prisma.$transaction(async (tx) => {
+      // 모임 참가 정보 삭제 (호스트 또는 참가자)
+      await tx.eventJoin.deleteMany({
+        where: {
+          OR: [
+            // 모임의 호스트
+            {
+              event: {
+                hostId: userId,
+                startTime: {
+                  gt: new Date(),
+                },
+              },
+            },
+            // 모임의 참가자
+            {
+              userId,
+              event: {
+                startTime: {
+                  gt: new Date(),
+                },
+              },
+            },
+          ],
         },
-      },
+      });
+      // 모임 도시 정보 삭제 (호스트인 경우만)
+      await tx.eventCity.deleteMany({
+        where: {
+          event: {
+            hostId : userId,
+            startTime: {
+              gt: new Date(),
+            },
+          }
+        },
+      });
+      // 모임 삭제 (호스트인 경우만)
+      await tx.event.deleteMany({
+        where: {
+          hostId: userId,
+          startTime: {
+            gt: new Date(),
+          },
+        },
+      });
+
+      // 클럽 탈퇴
+      await tx.clubJoin.delete({
+        where: {
+          clubId_userId: {
+            clubId,
+            userId,
+          },
+        },
+      });
     });
   }
 
