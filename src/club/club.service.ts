@@ -117,9 +117,9 @@ export class ClubService {
     if (club.hostId !== user.id) {
       throw new ForbiddenException('클럽 주최자만 변경할 수 있습니다.');
     }
-    const newHost = await this.clubRepository.findUserById(payload.newHostId);
-    if (!newHost) {
-      throw new NotFoundException('새로운 호스트를 찾을 수 없습니다.');
+    const isJoinedUser = await this.clubRepository.isJoinedUser(clubId, payload.newHostId);
+    if (!isJoinedUser) {
+      throw new NotFoundException('클럽원이 아닙니다.');
     }
 
     await this.clubRepository.changeHost(clubId, payload.newHostId);

@@ -127,6 +127,17 @@ export class ClubRepository {
     });
   }
 
+  async isJoinedUser(clubId: number, userId: number): Promise<boolean> {
+    const clubJoin = await this.prisma.clubJoin.findFirst({
+      where: {
+        clubId,
+        userId,
+      },
+    });
+
+    return !!clubJoin;
+  }
+
   async changeHost(clubId: number, newHostId: number): Promise<void> {
     await this.prisma.club.update({
       where: {
