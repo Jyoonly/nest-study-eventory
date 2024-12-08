@@ -56,7 +56,26 @@ export class ClubRepository {
 
   async deleteClub(clubId: number): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
-      await tx.event.deleteMany({ // 시작되지 않은 모임 삭제
+      // 시작되지 않은 모임 삭제 (연관된 데이터도 삭제)
+      await tx.eventCity.deleteMany({
+        where: {
+          event: {
+            clubId,
+            startTime: { gt: new Date() },
+          },
+        },
+      });
+
+      await tx.eventJoin.deleteMany({
+        where: {
+          event: {
+            clubId,
+            startTime: { gt: new Date() },
+          },
+        },
+      });
+      
+      await tx.event.deleteMany({ 
         where: {
           clubId,
           startTime: { gt: new Date() },
