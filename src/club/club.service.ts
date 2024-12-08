@@ -1,5 +1,7 @@
 import {
+  BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,6 +13,7 @@ import { ClubRepository } from './club.repository';
 import { ClubDetailDto } from './dto/club-detail.dto';
 import { ClubQuery } from './query/club.query';
 import { ClubRequestListDto } from './dto/club.request.dto';
+import { ClubRequestAction } from './enum/club.enum';
 
 @Injectable()
 export class ClubService {
@@ -96,5 +99,31 @@ export class ClubService {
     }
 
     return ClubRequestListDto.from(requests);
+  }
+
+  async handleClubRequest(
+    requestId: number,
+    action: ClubRequestAction,
+    user: UserBaseInfo,
+  ): Promise<void> {
+    const request = await this.clubRepository.findClubRequest(requestId);
+    if (!request) {
+      throw new NotFoundException('해당 클럽의 가입 신청을 찾을 수 없습니다.');
+    }
+    if (request.club.hostId !== user.id) {
+      throw new ForbiddenException(
+        '클럽 주최자만 가입 신청을 처리할 수 있습니다.',
+      );
+    }
+
+    if (action === ClubRequestAction.APPROVE) {
+      await this.clubRepository.approveClubRequest(
+        requestId,
+        request.club.id,
+        request.userId,
+      );
+    } else if (action === ClubRequestAction.REJECT) {
+      await this.clubRepository.rejectClubRequest(requestId);
+    }
   }
 }

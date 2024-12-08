@@ -178,4 +178,50 @@ export class ClubRepository {
       },
     });
   }
+
+  async findClubRequest(requestId: number) {
+    return this.prisma.clubRequest.findUnique({
+      where: {
+        id: requestId,
+      },
+      select: {
+        id: true,
+        userId: true,
+        club: {
+          select: {
+            id: true,
+            hostId: true,
+          },
+        },
+      },
+    });
+  }
+
+  async approveClubRequest(
+    requestId: number,
+    clubId: number,
+    userId: number,
+  ): Promise<void> {
+    await this.prisma.$transaction([
+      this.prisma.clubJoin.create({
+        data: {
+          clubId,
+          userId,
+        },
+      }),
+      this.prisma.clubRequest.delete({
+        where: {
+          id: requestId,
+        },
+      }),
+    ]);
+  }
+
+  async rejectClubRequest(requestId: number): Promise<void> {
+    await this.prisma.clubRequest.delete({
+      where: {
+        id: requestId,
+      },
+    });
+  }
 }
