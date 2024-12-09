@@ -154,6 +154,28 @@ export class EventRepository {
     return !!clubJoin;
   }
 
+  async isUserJoinedEvent(eventId: number, userId: number): Promise<boolean> {
+    const eventJoin = await this.prisma.eventJoin.findFirst({
+      where: {
+        eventId,
+        userId,
+      },
+    });
+
+    return !!eventJoin;
+  }
+
+  async isEventArchived(eventId: number): Promise<boolean> {
+    const event = await this.prisma.event.findFirst({
+      where: {
+        id: eventId,
+        isArchived: true,
+      },
+    });
+
+    return !!event;
+  }
+
   async findEventById(id: number): Promise<EventData | null> {
     return this.prisma.event.findUnique({
       where: {
@@ -346,6 +368,7 @@ export class EventRepository {
           },
         },
         clubId: true,
+        isArchived: true,
       },
     });
   }
