@@ -63,6 +63,16 @@ export class ReviewRepository {
     return !!review;
   }
 
+  async isUserJoinedClub(clubId: number, userId: number): Promise<boolean> {
+    const clubJoin = await this.prisma.clubJoin.findFirst({
+      where: {
+        clubId,
+        userId,
+      },
+    });
+    return !!clubJoin;
+  }
+
   async isUserJoinedEvent(userId: number, eventId: number): Promise<boolean> {
     const event = await this.prisma.eventJoin.findUnique({
       where: {
@@ -95,13 +105,38 @@ export class ReviewRepository {
     });
   }
 
-  async getReviews(query: ReviewQuery): Promise<ReviewData[]> {
+  async getReviews(query: ReviewQuery, userId: number): Promise<ReviewData[]> {
     return this.prisma.review.findMany({
       where: {
         eventId: query.eventId,
         user: {
           deletedAt: null,
           id: query.userId,
+        },
+        event: {
+          OR: [
+            // 일반 모임
+            { clubId: null, isArchived: false },
+            // 클럽 모임. 가입자만 조회 가능
+            {
+              club: {
+                clubJoin: {
+                  some: {
+                    userId,
+                  },
+                },
+              },
+            },
+            // 아카이브된 모임. 참여자만 조회 가능
+            {
+              isArchived: true,
+              eventJoin: {
+                some: {
+                  userId,
+                },
+              },
+            },
+          ],
         },
       },
       select: {
